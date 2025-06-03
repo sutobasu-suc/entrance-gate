@@ -1,0 +1,38 @@
+<!-- gate.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+ 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>入場確認</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 1em; }
+    #reader { width: 300px; margin: auto; }
+    .info { margin-top: 1em; font-size: 1.1em; }
+  </style>
+</head>
+<body>
+  <h1>改札システム - 入場確認</h1>
+  <div id="reader"></div>
+  <div class="info" id="result">QRコードをスキャンしてください</div>
+
+  <script>
+    new Html5Qrcode("reader").start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 200 },
+      (decodedText) => {
+        const data = localStorage.getItem(decodedText);
+        const resultEl = document.getElementById('result');
+        if (data) {
+          const obj = JSON.parse(data);
+          resultEl.innerHTML = `✅ <strong>${obj.name}</strong> さん<br>金額: ${obj.amount} 円<br>入場日: ${obj.date}`;
+        } else {
+          resultEl.innerHTML = '❌ 登録情報が見つかりません';
+        }
+      },
+      (error) => {}
+    );
+  </script>
+</body>
+</html>
