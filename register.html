@@ -1,0 +1,63 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登録画面</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: sans-serif; padding: 1em; text-align: center; }
+    input, button { margin: 0.5em; padding: 0.5em; font-size: 1em; }
+  </style>
+</head>
+<body>
+  <h1>改札システム - 登録</h1>
+  <div id="reader" style="width: 300px; margin: auto;"></div>
+  <p>スキャンされたID: <span id="qr-id">（未取得）</span></p>
+
+  <div>
+    <input type="text" id="name" placeholder="名前"><br>
+    <input type="number" id="amount" placeholder="金額"><br>
+    <input type="date" id="date"><br>
+    <input type="password" id="pass" placeholder="4桁パスワード" maxlength="4"><br>
+    <button onclick="registerData()">登録</button>
+  </div>
+
+  <script>
+    let scannedId = null;
+    const savedPass = localStorage.getItem('reg-pass') || null;
+
+    function registerData() {
+      const name = document.getElementById('name').value;
+      const amount = parseInt(document.getElementById('amount').value);
+      const date = document.getElementById('date').value;
+      const pass = document.getElementById('pass').value;
+
+      if (!scannedId) return alert('QRコードを読み取ってください');
+      if (!name || !amount || !date) return alert('すべての情報を入力してください');
+      if (!/^\d{4}$/.test(pass)) return alert('パスワードは4桁の数字です');
+
+      if (!savedPass) {
+        localStorage.setItem('reg-pass', pass);
+        alert('パスワードを設定しました');
+      } else if (pass !== savedPass) {
+        return alert('パスワードが違います');
+      }
+
+      localStorage.setItem(scannedId, JSON.stringify({ name, amount, date }));
+      alert('登録しました！');
+    }
+
+    new Html5Qrcode("reader").start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 200 },
+      (decodedText) => {
+        scannedId = decodedText;
+        document.getElementById('qr-id').innerText = decodedText;
+      },
+      (error) => {}
+    );
+  </script>
+</body>
+</html>
