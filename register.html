@@ -51,7 +51,7 @@
 
     new Html5Qrcode("reader").start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: 200 },
+      { fps: 60, qrbox: 200 },
       (decodedText) => {
         scannedId = decodedText;
         document.getElementById('qr-id').innerText = decodedText;
