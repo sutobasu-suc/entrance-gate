@@ -20,7 +20,7 @@
   <script>
     new Html5Qrcode("reader").start(
       { facingMode: "environment" },
-      { fps:60, qrbox: 200 },
+      { fps:600, qrbox: 200 },
       (decodedText) => {
         const data = localStorage.getItem(decodedText);
         const resultEl = document.getElementById('result');
